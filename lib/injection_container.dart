@@ -2,6 +2,7 @@
 import 'package:amc_2024/src/application/carbon_footprint_service.dart';
 import 'package:amc_2024/src/application/electricity_service.dart';
 import 'package:amc_2024/src/application/trips_service.dart';
+import 'package:amc_2024/src/infra/account/profile_repo.dart';
 import 'package:amc_2024/src/infra/carbon/carbon_api.dart';
 import 'package:amc_2024/src/infra/electricity/hydro_api.dart';
 import 'package:dio/dio.dart';
@@ -27,4 +28,7 @@ void setupLocator() {
 
   // External
   locator.registerLazySingleton(() => Dio());
+
+  // Repository
+  locator.registerLazySingleton(() => UserRepository());
 }
