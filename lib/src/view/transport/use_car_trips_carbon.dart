@@ -37,7 +37,6 @@ ValueNotifier<double> useCarTripsCarbonKg() {
           await carbonFootprintService.computeVehicleCarbonFootprint(
               totalCarDistanceMeters.toDouble() / 1000, userInfo.carId);
       carbonKg.value = vehicleModel.data.attributes.carbonKg;
-      print("carbonKg: ${carbonKg.value}");
     }
 
     if (trips.value.isNotEmpty) {

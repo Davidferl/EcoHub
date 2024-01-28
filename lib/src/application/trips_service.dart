@@ -41,4 +41,13 @@ class TripsService {
     }
     return totalLength;
   }
+
+  int computeTripsTotalLengthInKm(List<Trip> trips) {
+    /* RETURNED DISTANCE IS IN KILOMETERS */
+    int totalLength = 0;
+    for (Trip trip in trips) {
+      totalLength += trip.distanceMeters;
+    }
+    return totalLength ~/ 1000;
+  }
 }
