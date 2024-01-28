@@ -1,6 +1,7 @@
 
 import 'package:amc_2024/src/application/carbon_footprint_service.dart';
 import 'package:amc_2024/src/application/electricity_service.dart';
+import 'package:amc_2024/src/application/trips_service.dart';
 import 'package:amc_2024/src/infra/carbon/carbon_api.dart';
 import 'package:amc_2024/src/infra/electricity/hydro_api.dart';
 import 'package:dio/dio.dart';
@@ -17,6 +18,7 @@ void setupLocator() {
   locator.registerLazySingleton(() => HydroService(hydroApi: locator()));
   locator.registerLazySingleton(
       () => CarbonFootprintService(carbonApi: locator()));
+  locator.registerLazySingleton(() => TripsService());
 
   //API
   locator.registerLazySingleton<HttpClient>(() => HttpClientImpl(locator()));
