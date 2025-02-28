@@ -1,0 +1,234 @@
+import 'package:amc_2024/helpers/ui_helpers.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../../../injection_container.dart';
+import '../../application/auth_service.dart';
+import '../../domain/user/user.dart';
+import '../../infra/account/user_repo.dart';
+import '../../theme/colors.dart';
+
+class Profile extends HookWidget {
+  const Profile({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final AuthService authService = locator<AuthService>();
+    final UserRepository userRepository = locator<UserRepository>();
+
+    final profile = useState<User?>(null);
+
+    useEffect(() {
+      Future<void> getProfile() async {
+        final userId = authService.currentUser!.uid;
+        final userInfo = await userRepository.getUser(userId);
+        profile.value = userInfo;
+      }
+
+      getProfile();
+      return () {};
+    }, []);
+
+    Future<void> logout() async {
+      await authService.logout();
+      Navigator.pushReplacementNamed(context, '/login');
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        automaticallyImplyLeading: false,
+        title: Align(
+          alignment: Alignment.center,
+          child: Text(
+            AppLocalizations.of(context)!.profile,
+            style: Theme.of(context)
+                .textTheme
+                .displayLarge!
+                .copyWith(color: kcPrimaryVariant),
+          ),
+        ),
+      ),
+      body: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 120,
+                height: 120,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(1000),
+                  child: profile.value != null
+                      ? SvgPicture.network(
+                          'https://source.boringavatars.com/beam/120/${profile.value!.name}${profile.value!.surname}',
+                          fit: BoxFit.cover,
+                        )
+                      : Container(),
+                ),
+              ),
+              verticalSpace(16),
+              Text(
+                profile.value != null
+                    ? '${profile.value!.name} ${profile.value!.surname}'
+                    : "",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: kcPrimaryVariant),
+              ),
+              verticalSpace(48),
+              Expanded(
+                  child: ListView(
+                scrollDirection: Axis.vertical,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.personal_info.toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: kcLightSecondary),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.first_name,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: kcPrimaryVariant,
+                                  ),
+                        ),
+                        Text(
+                          profile.value != null ? profile.value!.name : "",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: kcSecondary,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    color: kcLightSecondary,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.last_name,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: kcPrimaryVariant,
+                                  ),
+                        ),
+                        Text(
+                          profile.value != null ? profile.value!.surname : "",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: kcSecondary,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    color: kcLightSecondary,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!.car,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: kcPrimaryVariant,
+                                  ),
+                        ),
+                        Text(
+                          profile.value != null ? profile.value!.carId : "",
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: kcSecondary,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    color: kcLightSecondary,
+                  ),
+                  verticalSpace(16),
+                  Text(
+                    AppLocalizations.of(context)!.other.toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: kcLightSecondary),
+                  ),
+                  GestureDetector(
+                    onTap: () => logout(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.logout,
+                                color: kcSecondary,
+                              ),
+                              const SizedBox(
+                                width: 16,
+                              ),
+                              Text(
+                                AppLocalizations.of(context)!.logout,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: kcPrimaryVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            '>',
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: kcSecondary,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Divider(
+                    color: kcLightSecondary,
+                  ),
+                ],
+              )),
+            ],
+          ),
+        ),
+      )),
+    );
+  }
+}
