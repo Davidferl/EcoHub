@@ -1,6 +1,6 @@
 # EcoHub
 
-## Winning project of the January 2024 AMC Hackathon
+## 🏆 Winning project of the January 2024 AMC Hackathon
 
 ### Made by team "Bonne Question"
 ![AMC_2024_winners](https://github.com/user-attachments/assets/7372e150-ac33-4aee-bcb6-2c4d2ff56781)
